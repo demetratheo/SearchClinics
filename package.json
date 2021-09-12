@@ -19,6 +19,7 @@
   "homepage": "https://github.com/demetratheo/SearchClinics#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "joi": "^17.4.2"
+    "joi": "^17.4.2",
+    "node-fetch": "^3.0.0"
   }
 }

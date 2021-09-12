@@ -1,3 +1,4 @@
-const provider1 = require('./provider1');
+const getVetClinics = require('./getVetClinics');
+const getDentalClinics = require('./getDentalClinics')
 
-module.exports = {provider1};
+module.exports = {getVetClinics, getDentalClinics};

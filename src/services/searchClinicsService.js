@@ -1,12 +1,12 @@
-const {provider1} = require('../infrastructure');
+const {getVetClinics, getDentalClinics} = require('../infrastructure');
 
 const searchClinicsService = async (params) => {
 
-  // get from provider 1
-  // get from provider 2
   console.log(params);
+  const vetClinics = await getVetClinics();
+  const dentalClinics = await getDentalClinics();
 
-  return await provider1();
+  return {...vetClinics, ...dentalClinics};
 };
 
 module.exports = searchClinicsService;

@@ -1,16 +1,15 @@
 const express = require('express');
 const routes = require('./routes');
 
-const app = express();
-const port = 3000;
+const start = () => {
+  const app = express();
+  const port = 3000;
 
-// app.use(require('cors')());
+  app.use(routes);
 
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
+  app.listen(port, () => {
+    console.log(`Server listening at http://localhost:${port}`)
+  });
+}
 
-app.use(routes);
-
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-});
+start();
