@@ -1,3 +1,3 @@
-const searchClinicsService = require('./searchClinicsService');
+const {searchClinicsService} = require("./searchClinicsService/searchClinicsService");
 
 module.exports = {searchClinicsService};

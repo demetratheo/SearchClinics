@@ -1,3 +1,3 @@
-const clinicsController = require('./clinicsController');
+const clinicsController = require("./clinicsController");
 
 module.exports = {clinicsController};
