@@ -4,7 +4,7 @@ const chai = require("chai"),
 
 const {vetClinicsData} = require("../data/vetClinics");
 const {dentalClinicsData} = require("../data/dentalClinics");
-const {dentalClinicsLargeData} = require("../data/dentalClinicsLarge");
+const {createAvailabilityDates} = require("../helpers/createAvailabilityDates");
 
 chai.use(chaiHttp);
 const expect = chai.expect;
@@ -18,7 +18,7 @@ describe("GetClinics Endpoint", () => {
 
   beforeEach(() => {
     googleStorageScope.get("/vet-clinics.json").reply(200, vetClinicsData);
-    googleStorageScope.get("/dental-clinics.json").reply(200, dentalClinicsLargeData);
+    googleStorageScope.get("/dental-clinics.json").reply(200, dentalClinicsData);
   })
   
   it("Returns all clinics if no search params are provided", async() => {
@@ -70,32 +70,48 @@ describe("GetClinics Endpoint", () => {
       from: "10:00",
       to: "11:00"
     };
-    let timeFrom = availability.from.split(":");
-    const availabilityDateFrom = new Date();
-    availabilityDateFrom.setHours(timeFrom[0], timeFrom[1], 0, 0);
-    
-    let timeTo = availability.to.split(":");
-    const availabilityDateTo = new Date(availabilityDateFrom.getTime());
-    availabilityDateTo.setHours(timeTo[0], timeTo[1], 0, 0);
-
+    const commonDate = new Date();
     const res = await chai.request(host).post("/").send({availability});
-
+    
+    const paramAvailability = createAvailabilityDates(availability, commonDate);
     expect(res.status).to.be.equal(200);
     expect(res.body.length).to.not.equal(0);
     res.body.map((clinic) => {
       const availabilityResponse = clinic.availability || clinic.opening;
-      timeFrom = availabilityResponse.from.split(":");
-      const responseAvailabilityDateFrom = new Date(availabilityDateFrom.getTime());
-      responseAvailabilityDateFrom.setHours(timeFrom[0], timeFrom[1], 0, 0);
+      const responseAvailability = createAvailabilityDates(availabilityResponse, commonDate);
+      
+      expect(paramAvailability.from)
+            .to.be.greaterThanOrEqual(responseAvailability.from);
+      expect(paramAvailability.to)
+            .to.be.lessThanOrEqual(responseAvailability.to);
+    })
+  });
 
-      timeTo = availabilityResponse.to.split(":");
-      const responseAvailabilityDateTo = new Date(availabilityDateFrom.getTime());
-      responseAvailabilityDateTo.setHours(timeTo[0], timeTo[1], 0, 0);
-
-      expect(availabilityDateFrom)
-            .to.be.greaterThanOrEqual(responseAvailabilityDateFrom);
-      expect(availabilityDateTo)
-            .to.be.lessThanOrEqual(responseAvailabilityDateTo);
+  it("Returns all matching clinics with all params", async() => {
+    const params = {
+      name: "Hopkins Hospital Baltimore",
+      state: "Florida",
+      availability: {
+        from: "10:00",
+        to: "11:00"
+      }
+    }
+    const commonDate = new Date();
+    const res = await chai.request(host).post("/").send(params);
+    
+    const paramAvailability = createAvailabilityDates(params.availability, commonDate);
+    expect(res.status).to.be.equal(200);
+    expect(res.body.length).to.be.equal(1);
+    res.body.map((clinic) => {
+      const availabilityResponse = clinic.availability || clinic.opening;
+      const responseAvailability = createAvailabilityDates(availabilityResponse, commonDate);
+      
+      expect(clinic.stateName || clinic.stateCode).to.be.equal(params.state);
+      expect(clinic.name || clinic.clinicName).to.be.equal(params.name);
+      expect(paramAvailability.from)
+            .to.be.greaterThanOrEqual(responseAvailability.from);
+      expect(paramAvailability.to)
+            .to.be.lessThanOrEqual(responseAvailability.to);
     })
   });
 

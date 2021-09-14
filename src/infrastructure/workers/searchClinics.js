@@ -1,24 +1,24 @@
 const searchClinics = ({clinics, searchParams}) => {
   
-  const createAvailabilityDates = (availability, staticDate) => {
+  const createAvailabilityDates = (availability, commonDate) => {
     let timeTo = availability.to.split(":");
-    let availabilityTo = new Date(staticDate.getTime());
+    let availabilityTo = new Date(commonDate.getTime());
     availabilityTo.setHours(Number(timeTo[0]), Number(timeTo[1]), 0, 0)
   
     let timeFrom = availability.from.split(":");
-    let availabilityFrom = new Date(staticDate.getTime());
+    let availabilityFrom = new Date(commonDate.getTime());
     availabilityFrom.setHours(Number(timeFrom[0]), Number(timeFrom[1]), 0, 0);
   
     return {from: availabilityFrom, to: availabilityTo};
   }
 
   const searchConditionTrue = (paramKeys, matchValues) => {
-    const staticDate = new Date();
+    const commonDate = new Date();
     return paramKeys.every((key) => {
       if (key === "availability") {
         const clinicAvailability = matchValues[key];
-        const clinicDates = createAvailabilityDates(clinicAvailability, staticDate);
-        const paramDates = createAvailabilityDates(searchParams.availability, staticDate);
+        const clinicDates = createAvailabilityDates(clinicAvailability, commonDate);
+        const paramDates = createAvailabilityDates(searchParams.availability, commonDate);
         return (paramDates.from.getTime() >= clinicDates.from.getTime()  &&
                 paramDates.to.getTime() <= clinicDates.to.getTime());
       }
