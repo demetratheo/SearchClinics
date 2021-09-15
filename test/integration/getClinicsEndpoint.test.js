@@ -10,7 +10,7 @@ chai.use(chaiHttp);
 const expect = chai.expect;
 
 describe("GetClinics Endpoint", () => {
-  const host = "http://localhost:3000";
+  const host = "http://localhost:5000";
   let googleStorageScope;
   before(() => {
     googleStorageScope = nock("https://storage.googleapis.com/scratchpay-code-challenge");

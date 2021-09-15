@@ -2,7 +2,7 @@ const {splitArrayToChunks} = require("./splitArrayToChunks");
 const {searchClinicsWorker, searchClinics} = require("../../infrastructure");
 
 const processSearchClinics = async(searchParams, vetClinics, dentalClinics) => {
-  const chunkSize = 8500;
+  const chunkSize = 10000;
   if(!Object.keys(searchParams).length){
     return vetClinics.concat(dentalClinics);
   }
