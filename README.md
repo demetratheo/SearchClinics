@@ -20,4 +20,4 @@ Formula: (testCodeLines / srcCodeLines) * 100
 
 ### Additional comments ###
   
- For performance purposes, in order to not block the main app's thread in case of large datasets (since DB is not allowed in this project). I have used the nodejs worker_threads library along with the 'node-worker-threads-pool' npm package. So in case of a large datasets the api will split the data in to smaller chunks and process the data in worker threads.
+ For performance purposes, in order to not block the main app's thread in case of large datasets (since DB is not allowed in this project). I have used the nodejs worker_threads library along with the 'node-worker-threads-pool' npm package. So in case of large datasets the api will split the data in to smaller chunks and process the data in worker threads.
